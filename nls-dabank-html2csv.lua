@@ -17,6 +17,8 @@ function reduce_space(self)
 end
 
 
+-- Configuration values:
+-- IDX: Absolute index, ROW: Relative to start of city, COL: Column
 local FIRST_CITY_IDX, NEXT_CITY_ROW = 4, 29
 local TOTAL_ROW = 2
 local AGES_START_ROW, AGES_END_ROW = 4, 7

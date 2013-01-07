@@ -1,3 +1,9 @@
 Converts output of NLS DABANK-PC HTML-Interface to CSV
   (NLS: Niedersächsisches Landesamt für Statistik)
+
 Sample file: http://www.stadt-walsrode.de/media/custom/352_551_1.HTML
+  (If you try it, add the missing </html> at the end.)
+
+If the NLS changes their tables, this script will break horribly and you will notice only by closely examining the output: There is no error detection! You have been warned.
+
+In case this script stops working, you might have to adjust the variables described with "Configuration values" in the sourcecode. Or maybe it is entirely broken...
