@@ -1,12 +1,7 @@
 #!/usr/bin/lua
 
---[[
-	Converts output of NLS DABANK-PC HTML-Interface to CSV
-		(NLS: Niedersächsisches Landesamt für Statistik)
-	Sample: http://www.stadt-walsrode.de/media/custom/352_551_1.HTML
-]]
-
 package.path = package.path .. ";penlight/lua/?.lua"
+
 
 local xml = require "pl.xml"
 local pretty = require "pl.pretty"
