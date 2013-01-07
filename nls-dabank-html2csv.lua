@@ -64,6 +64,8 @@ local e_tbody = e_table:child_with_name("tbody")
 
 
 local cities = {}
+local agegroups = {}
+local detailed_agegroups = {}
 
 
 local city_idx = FIRST_CITY_IDX
@@ -106,12 +108,22 @@ while city_tr do
 	for i = city_idx + AGES_START_ROW, city_idx + AGES_END_ROW do
 		local agegroup, data = parse_line(i)
 		city.ages[agegroup] = data
+		if not agegroups[agegroup] then
+			assert(city_idx == FIRST_CITY_IDX)
+			agegroups[agegroup] = true
+			table.insert(agegroups, agegroup)
+		end
 	end
 
 	city.details = {}
 	for i = city_idx + DETAILS_START_ROW, city_idx + DETAILS_END_ROW do
 		local agegroup, data = parse_line(i)
 		city.details[agegroup] = data
+		if not detailed_agegroups[agegroup] then
+			assert(city_idx == FIRST_CITY_IDX)
+			detailed_agegroups[agegroup] = true
+			table.insert(detailed_agegroups, agegroup)
+		end
 	end
 
 	table.insert(cities, city)
@@ -119,37 +131,6 @@ while city_tr do
 	city_idx = city_idx + NEXT_CITY_ROW
 	city_tr = e_tbody[city_idx]
 end
-
-
-local agegroups = {
-	"0 - 15",
-	"15 - 60",
-	"60 - 65",
-	"65 und mehr",
-}
-
-local detailed_agegroups = {
-	"0 - 3",
-	"3 - 5",
-	"5 - 6",
-	"6 - 10",
-	"10 - 15",
-	"15 - 18",
-	"18 - 20",
-	"20 - 25",
-	"25 - 30",
-	"30 - 35",
-	"35 - 40",
-	"40 - 45",
-	"45 - 50",
-	"50 - 55",
-	"55 - 60",
-	"60 - 63",
-	"63 - 65",
-	"65 - 70",
-	"70 - 75",
-	"75 und mehr",
-}
 
 
 output:write("Number:Name")
