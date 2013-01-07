@@ -58,6 +58,12 @@ local e_html = parsed:child_with_name("html") or parsed -- somehow html is not t
 local e_body = e_html:child_with_name("body")
 local e_table = e_body:child_with_name("table")
 local e_tbody = e_table:child_with_name("tbody")
+if not e_tbody then
+	-- older tables do not contain a tbody
+	e_tbody = e_table
+	DESCRIPTION_IDX = DESCRIPTION_IDX + 1
+	FIRST_CITY_IDX = FIRST_CITY_IDX + 1
+end
 
 
 local cities = {}
