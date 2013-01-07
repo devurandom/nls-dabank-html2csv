@@ -22,6 +22,13 @@ function reduce_space(self)
 end
 
 
+local FIRST_CITY_IDX, NEXT_CITY_ROW = 4, 29
+local TOTAL_ROW = 2
+local AGES_START_ROW, AGES_END_ROW = 4, 7
+local DETAILS_START_ROW, DETAILS_END_ROW = 9, 28
+local TOTAL_COL, MALE_COL, FEMALE_COL = 2, 5, 7
+
+
 local input
 if #arg < 1 then
 	input = io.stdin
@@ -58,7 +65,8 @@ local e_tbody = e_table:child_with_name("tbody")
 
 local cities = {}
 
-local city_idx = 4
+
+local city_idx = FIRST_CITY_IDX
 local city_tr = e_tbody[city_idx]
 
 while city_tr do
@@ -79,7 +87,7 @@ while city_tr do
 	local city = {number = city_number, name = city_name}
 
 	local function get_data(tr)
-		local total, male, female = tr[2]:get_text(), tr[5]:get_text(), tr[7]:get_text()
+		local total, male, female = tr[TOTAL_COL]:get_text(), tr[MALE_COL]:get_text(), tr[FEMALE_COL]:get_text()
 		total, male, female = tonumber(total), tonumber(male), tonumber(female)
 		return total, male, female
 	end
@@ -91,24 +99,24 @@ while city_tr do
 		return agegroup, {get_data(tr)}
 	end
 
-	local _, data = parse_line(city_idx + 2)
+	local _, data = parse_line(city_idx + TOTAL_ROW)
 	city.total = data
 
 	city.ages = {}
-	for i = city_idx + 4, city_idx + 7 do
+	for i = city_idx + AGES_START_ROW, city_idx + AGES_END_ROW do
 		local agegroup, data = parse_line(i)
 		city.ages[agegroup] = data
 	end
 
 	city.details = {}
-	for i = city_idx + 9, city_idx + 28 do
+	for i = city_idx + DETAILS_START_ROW, city_idx + DETAILS_END_ROW do
 		local agegroup, data = parse_line(i)
 		city.details[agegroup] = data
 	end
 
 	table.insert(cities, city)
 
-	city_idx = city_idx + 29
+	city_idx = city_idx + NEXT_CITY_ROW
 	city_tr = e_tbody[city_idx]
 end
 
