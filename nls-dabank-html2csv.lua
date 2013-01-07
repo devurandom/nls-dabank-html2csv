@@ -11,9 +11,14 @@ package.path = package.path .. ";penlight/lua/?.lua"
 local xml = require "pl.xml"
 local pretty = require "pl.pretty"
 
+
 -- trim6 from http://lua-users.org/wiki/StringTrim
 function string:trim()
 	return self:match('^()%s*$') and '' or self:match('^%s*(.*%S)')
+end
+
+function reduce_space(self)
+	return self:gsub("&nbsp;", " "):gsub(" +", " "):trim()
 end
 
 
@@ -68,7 +73,7 @@ while city_tr do
 		error(string.format("Failed to parse city blurbs: %s", city_text))
 	end
 
-	city_name = city_name:trim():gsub("&nbsp;", ""):gsub("  ", " ")
+	city_name = reduce_space(city_name)
 	city_number = tonumber(city_number)
 
 	local city = {number = city_number, name = city_name}
@@ -82,8 +87,7 @@ while city_tr do
 	local function parse_line(i)
 		local tr = e_tbody[i]
 		local agegroup = tr[1]:get_text()
-		agegroup = agegroup:trim():gsub("&nbsp;", ""):gsub("  ", " ")
-
+		agegroup = reduce_space(agegroup)
 		return agegroup, {get_data(tr)}
 	end
 
