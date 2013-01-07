@@ -19,11 +19,12 @@ end
 
 -- Configuration values:
 -- IDX: Absolute index, ROW: Relative to start of city, COL: Column
+local DESCRIPTION_IDX = 1
+local GENDER_START_COL, GENDER_END_COL = 2, 4
 local FIRST_CITY_IDX, NEXT_CITY_ROW = 4, 29
 local TOTAL_ROW = 2
 local AGES_START_ROW, AGES_END_ROW = 4, 7
 local DETAILS_START_ROW, DETAILS_END_ROW = 9, 28
-local TOTAL_COL, MALE_COL, FEMALE_COL = 2, 5, 7
 
 
 local input
@@ -67,8 +68,18 @@ end
 
 
 local cities = {}
+local genders = {}
 local agegroups = {}
 local detailed_agegroups = {}
+
+
+local description_tr = e_tbody[DESCRIPTION_IDX]
+for i = GENDER_START_COL, GENDER_END_COL do
+	local gender, width = description_tr[i]:get_text(), description_tr[i]:get_attribs().colspan
+	gender = reduce_space(gender)
+	width = tonumber(width)
+	table.insert(genders, {gender = gender, width = width})
+end
 
 
 local city_idx = FIRST_CITY_IDX
@@ -92,16 +103,22 @@ while city_tr do
 	local city = {number = city_number, name = city_name}
 
 	local function get_data(tr)
-		local total, male, female = tr[TOTAL_COL]:get_text(), tr[MALE_COL]:get_text(), tr[FEMALE_COL]:get_text()
-		total, male, female = tonumber(total), tonumber(male), tonumber(female)
-		return total, male, female
+		local values = {}
+		local col = GENDER_START_COL
+		for i = 1, #genders do
+			local value = tr[col]:get_text()
+			value = tonumber(value)
+			table.insert(values, value)
+			col = col + genders[i].width
+		end
+		return values
 	end
 
 	local function parse_line(i)
 		local tr = e_tbody[i]
 		local agegroup = tr[1]:get_text()
 		agegroup = reduce_space(agegroup)
-		return agegroup, {get_data(tr)}
+		return agegroup, get_data(tr)
 	end
 
 	local _, data = parse_line(city_idx + TOTAL_ROW)
@@ -137,17 +154,17 @@ end
 
 
 output:write("Number:Name")
-for _,gender in ipairs{"total", "male", "female"} do
-	output:write(":total -- "..gender)
+for _,gender in ipairs(genders) do
+	output:write(":total -- "..gender.gender)
 end
 for _,agegroup in ipairs(agegroups) do
-	for _,gender in ipairs{"total", "male", "female"} do
-		output:write(":"..agegroup.." -- "..gender)
+	for _,gender in ipairs(genders) do
+		output:write(":"..agegroup.." -- "..gender.gender)
 	end
 end
 for _,agegroup in ipairs(detailed_agegroups) do
-	for _,gender in ipairs{"total", "male", "female"} do
-		output:write(":"..agegroup.." -- "..gender)
+	for _,gender in ipairs(genders) do
+		output:write(":"..agegroup.." -- "..gender.gender)
 	end
 end
 output:write("\n")
@@ -157,7 +174,7 @@ for _,city in ipairs(cities) do
 	output:write(string.format("%d:%s", city.number, city.name))
 
 	local function print_data(data)
-		for i = 1, 3 do
+		for i = 1, #genders do
 			local item = data[i]
 			if not item then
 				output:write(":-")
