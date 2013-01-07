@@ -12,8 +12,8 @@ local xml = require "pl.xml"
 local pretty = require "pl.pretty"
 
 -- trim6 from http://lua-users.org/wiki/StringTrim
-function string.trim(s)
-	return s:match'^()%s*$' and '' or s:match'^%s*(.*%S)'
+function string:trim()
+	return self:match('^()%s*$') and '' or self:match('^%s*(.*%S)')
 end
 
 
